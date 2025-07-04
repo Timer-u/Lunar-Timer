@@ -352,3 +352,80 @@ footer {
 .container {
   animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+.open-source-info {
+  background: var(--md-sys-color-surface-2);
+  border-radius: 24px;
+  padding: 1.5rem 2rem;
+  margin-top: 1.5rem;
+  text-align: left;
+}
+
+.open-source-info .info-title {
+  font-size: 1.125rem;
+  color: var(--md-sys-color-secondary);
+  margin-bottom: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+  text-align: center;
+}
+
+.open-source-info .info-content {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.open-source-info a {
+  color: var(--md-sys-color-primary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+  position: relative;
+  display: inline-block;
+  padding: 0 0.25rem;
+}
+
+.open-source-info a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background-color: var(--md-sys-color-primary);
+  transition: width 0.3s ease;
+}
+
+.open-source-info a:hover {
+  color: var(--md-sys-color-on-surface);
+}
+
+.open-source-info a:hover::after {
+  width: 100%;
+}
+
+.open-source-info .material-symbols-outlined {
+  vertical-align: middle;
+  font-size: 1.1rem;
+  margin-right: 0.5rem;
+  color: var(--md-sys-color-tertiary);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .open-source-info {
+    border-radius: 16px;
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .open-source-info {
+    border-radius: 12px;
+    padding: 1rem;
+  }
+
+  .open-source-info .info-content {
+    font-size: 0.9375rem;
+  }
+}
