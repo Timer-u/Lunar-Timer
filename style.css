@@ -429,3 +429,13 @@ footer {
     font-size: 0.9375rem;
   }
 }
+
+.days-counter {
+  font-size: 4rem;
+  font-weight: 300;
+  color: var(--md-sys-color-primary);
+  letter-spacing: -1px;
+  line-height: 1;
+  font-feature-settings: "tnum";
+  font-family: "Roboto", "Microsoft YaHei", sans-serif; /* 等宽 */
+}

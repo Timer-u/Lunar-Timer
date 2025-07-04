@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 更新天数计数器
     const dayCount = getDaysPassed();
-    daysCounterElement.textContent = numberToChinese(dayCount);
+    daysCounterElement.textContent = dayCount;
   }
 
   // 生成祝福语
