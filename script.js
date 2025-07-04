@@ -99,22 +99,114 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // 复制祝福语到剪贴板
+  let copyTooltip = null;
+
+  function createCopyTooltip() {
+    if (!copyTooltip) {
+      copyTooltip = document.createElement("div");
+      copyTooltip.className = "copy-tooltip";
+      copyTooltip.innerHTML = `
+          <span class="material-symbols-outlined">check_circle</span>
+          <span>已复制到剪贴板</span>
+        `;
+      document.body.appendChild(copyTooltip);
+    }
+    return copyTooltip;
+  }
+
+  // 显示复制提示
+  function showCopyTooltip(success = true) {
+    const tooltip = createCopyTooltip();
+
+    if (success) {
+      tooltip.innerHTML = `
+          <span class="material-symbols-outlined">check_circle</span>
+          <span>已复制到剪贴板</span>
+        `;
+    } else {
+      tooltip.innerHTML = `
+          <span class="material-symbols-outlined">error</span>
+          <span>复制失败，请手动复制</span>
+        `;
+    }
+
+    // 显示提示
+    tooltip.classList.add("show");
+
+    // 3秒后自动隐藏
+    setTimeout(() => {
+      tooltip.classList.remove("show");
+    }, 3000);
+  }
+
+  // 复制祝福语到剪贴板
   function copyWishToClipboard() {
     if (wishOutput.textContent) {
-      navigator.clipboard
-        .writeText(wishOutput.textContent)
-        .then(() => {
-          wishOutput.classList.add("copied");
-          setTimeout(() => {
-            wishOutput.classList.remove("copied");
-          }, 2000);
-        })
-        .catch((err) => {
-          console.error("复制失败:", err);
-          alert("复制失败，请手动复制文本");
-        });
+      // 添加点击动画
+      wishOutput.classList.add("copying");
+
+      // 尝试使用现代 API
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard
+          .writeText(wishOutput.textContent)
+          .then(() => {
+            showCopyTooltip(true);
+          })
+          .catch((err) => {
+            console.error("复制失败:", err);
+            fallbackCopy();
+          });
+      } else {
+        // 降级方案
+        fallbackCopy();
+      }
+
+      // 移除动画类
+      setTimeout(() => {
+        wishOutput.classList.remove("copying");
+      }, 600);
     }
   }
+
+  // 降级复制方案
+  function fallbackCopy() {
+    const textArea = document.createElement("textarea");
+    textArea.value = wishOutput.textContent;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-999999px";
+    textArea.style.top = "-999999px";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+      const successful = document.execCommand("copy");
+      showCopyTooltip(successful);
+    } catch (err) {
+      console.error("Fallback copy failed:", err);
+      showCopyTooltip(false);
+    }
+
+    document.body.removeChild(textArea);
+  }
+
+  // 添加长按支持（移动端）
+  let pressTimer = null;
+
+  wishOutput.addEventListener("touchstart", function (e) {
+    pressTimer = setTimeout(() => {
+      copyWishToClipboard();
+      e.preventDefault();
+    }, 500);
+  });
+
+  wishOutput.addEventListener("touchend", function () {
+    clearTimeout(pressTimer);
+  });
+
+  wishOutput.addEventListener("touchmove", function () {
+    clearTimeout(pressTimer);
+  });
 
   // 事件监听
   generateWishBtn.addEventListener("click", generateWish);
