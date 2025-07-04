@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const currentDateElement = document.getElementById("currentDate");
   const currentTimeElement = document.getElementById("currentTime");
   const daysCounterElement = document.getElementById("daysCounter");
+  const generateWishBtn = document.getElementById("generateWishBtn");
+  const wishOutput = document.getElementById("wishOutput");
 
   // 设置2025年农历新年开始日期 (2025年1月29日)
   const lunarNewYear2025 = new Date(2025, 0, 29);
@@ -45,6 +47,14 @@ document.addEventListener("DOMContentLoaded", function () {
     return result;
   }
 
+  // 获取已过天数
+  function getDaysPassed() {
+    const now = new Date();
+    const diffTime = Math.abs(now - lunarNewYear2025);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return now < lunarNewYear2025 ? 0 : diffDays;
+  }
+
   // 更新时间和日期
   function updateDateTime() {
     const now = new Date();
@@ -62,14 +72,41 @@ document.addEventListener("DOMContentLoaded", function () {
     const time = now.toLocaleTimeString("zh-CN");
     currentTimeElement.textContent = time;
 
-    // 计算农历新年已过天数
-    const diffTime = Math.abs(now - lunarNewYear2025);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    // 如果当前日期在农历新年之前，则显示0
-    const dayCount = now < lunarNewYear2025 ? 0 : diffDays;
+    // 更新天数计数器
+    const dayCount = getDaysPassed();
     daysCounterElement.textContent = numberToChinese(dayCount);
   }
+
+  // 生成祝福语
+  function generateWish() {
+    const daysPassed = getDaysPassed();
+    const dayChinese = numberToChinese(daysPassed);
+    const wishText = `新年第${dayChinese}天快乐~`;
+    
+    wishOutput.textContent = wishText;
+    wishOutput.classList.remove("copied");
+  }
+
+  // 复制祝福语到剪贴板
+  function copyWishToClipboard() {
+    if (wishOutput.textContent) {
+      navigator.clipboard.writeText(wishOutput.textContent)
+        .then(() => {
+          wishOutput.classList.add("copied");
+          setTimeout(() => {
+            wishOutput.classList.remove("copied");
+          }, 2000);
+        })
+        .catch(err => {
+          console.error('复制失败:', err);
+          alert('复制失败，请手动复制文本');
+        });
+    }
+  }
+
+  // 事件监听
+  generateWishBtn.addEventListener("click", generateWish);
+  wishOutput.addEventListener("click", copyWishToClipboard);
 
   // 初始更新
   updateDateTime();
