@@ -11,20 +11,31 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // 数字转中文大写函数
   function numberToChinese(num) {
-    const chineseNumbers = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
-    const units = ['', '十', '百', '千'];
-    
-    if (num === 0) return '零';
+    const chineseNumbers = [
+      "零",
+      "一",
+      "二",
+      "三",
+      "四",
+      "五",
+      "六",
+      "七",
+      "八",
+      "九",
+    ];
+    const units = ["", "十", "百", "千"];
+
+    if (num === 0) return "零";
     if (num < 10) return chineseNumbers[num];
-    
-    let result = '';
+
+    let result = "";
     let numStr = num.toString();
     let len = numStr.length;
-    
+
     for (let i = 0; i < len; i++) {
       const digit = parseInt(numStr[i]);
       const unitIndex = len - i - 1;
-      
+
       if (digit !== 0) {
         // 处理十位上的"一"省略情况 (如10读作"十"而不是"一十")
         if (!(unitIndex === 1 && digit === 1 && i === 0)) {
@@ -33,17 +44,17 @@ document.addEventListener("DOMContentLoaded", function () {
         result += units[unitIndex];
       } else {
         // 避免连续零和结尾零
-        if (result[result.length - 1] !== '零' && i < len - 1) {
-          result += '零';
+        if (result[result.length - 1] !== "零" && i < len - 1) {
+          result += "零";
         }
       }
     }
-    
+
     // 移除末尾的零
-    if (result.endsWith('零')) {
+    if (result.endsWith("零")) {
       result = result.slice(0, -1);
     }
-    
+
     return result;
   }
 
@@ -82,7 +93,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const daysPassed = getDaysPassed();
     const dayChinese = numberToChinese(daysPassed);
     const wishText = `新年第${dayChinese}天快乐~`;
-    
+
     wishOutput.textContent = wishText;
     wishOutput.classList.remove("copied");
   }
@@ -90,16 +101,17 @@ document.addEventListener("DOMContentLoaded", function () {
   // 复制祝福语到剪贴板
   function copyWishToClipboard() {
     if (wishOutput.textContent) {
-      navigator.clipboard.writeText(wishOutput.textContent)
+      navigator.clipboard
+        .writeText(wishOutput.textContent)
         .then(() => {
           wishOutput.classList.add("copied");
           setTimeout(() => {
             wishOutput.classList.remove("copied");
           }, 2000);
         })
-        .catch(err => {
-          console.error('复制失败:', err);
-          alert('复制失败，请手动复制文本');
+        .catch((err) => {
+          console.error("复制失败:", err);
+          alert("复制失败，请手动复制文本");
         });
     }
   }
